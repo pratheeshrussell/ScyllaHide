@@ -28,7 +28,7 @@ jobs:
       with:
         format: YYYY-MM-DD_HH-MM
     
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: ${{ github.event.repository.name }}_${{ steps.current-time.outputs.formattedTime }}
         path: Release/
