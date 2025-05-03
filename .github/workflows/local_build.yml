@@ -1,0 +1,34 @@
+name: Local build
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup VS environment
+      uses: ilammy/msvc-dev-cmd@cec98b9d092141f74527d0afa6feb2af698cfe89 # v1.12.0
+      with:
+        #vsversion: 2019 # blows up on github. lol...
+        # toolset should be 14.27, but it's not installed on Github. release.bat will help out here instead so we will eventually get a 14.27 env
+        toolset: 14.29
+
+    - name: Build
+      run: |
+        cmd /c call release.bat
+
+    - name: Get current time
+      uses: srfrnk/current-time@5a4163ad035ccd9a407ec9e519c3b6ba1b633d1e # v1.1.0
+      id: current-time
+      with:
+        format: YYYY-MM-DD_HH-MM
+    
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ github.event.repository.name }}_${{ steps.current-time.outputs.formattedTime }}
+        path: Release/
